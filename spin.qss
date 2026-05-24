@@ -1,0 +1,25 @@
+QSpinBox, QDoubleSpinBox {
+    background-color: #232323;
+    color: #E6E6E6;
+
+    border: 1px solid #3A3A3A;
+    border-radius: 6px;
+
+    padding: 4px 8px;
+}
+
+QSpinBox:hover, QDoubleSpinBox:hover {
+    border: 1px solid #5A5A5A;
+}
+
+QSpinBox:focus, QDoubleSpinBox:focus {
+    border: 1px solid #4FC3F7;
+}
+
+QSpinBox::up-button, QSpinBox::down-button,
+QDoubleSpinBox::up-button, QDoubleSpinBox::down-button {
+    width: 0px;
+    height: 0px;
+    border: none;
+    background: transparent;
+}

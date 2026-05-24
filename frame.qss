@@ -1,0 +1,7 @@
+QFrame#predictInput {
+    background-color: #1A1A1A;
+    border: 1px solid #2F2F2F;
+    border-radius: 8px;
+    padding: 8px;
+}
+

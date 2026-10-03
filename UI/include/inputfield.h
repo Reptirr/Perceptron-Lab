@@ -1,13 +1,13 @@
 #pragma once
 
+#include <model.h>
 #include <QWidget>
 #include <QDoubleSpinBox>
 #include <QGridLayout>
 #include <vector>
 #include <QLabel>
-
-#include "samples.h"
-#include "uidriver.h"
+#include <samples.h>
+#include <uidriver.h>
 
 class InputField : public QWidget
 {

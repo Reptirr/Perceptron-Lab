@@ -1,9 +1,9 @@
-#include "widget.h"
-#include "styleloader.h"
 
 #include <QApplication>
 #include <QCoreApplication>
 #include <QDir>
+#include <styleloader.h>
+#include <widget.h>
 
 int main(int argc, char *argv[])
 {

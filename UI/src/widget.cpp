@@ -1,7 +1,8 @@
-#include "widget.h"
+
 #include <QSplitter>
 #include <QHBoxLayout>
 #include <QDebug>
+#include <widget.h>
 
 void Widget::initializeConnects() {
     // ControlPanel -> UIDriver

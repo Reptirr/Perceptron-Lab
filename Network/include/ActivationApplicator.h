@@ -1,8 +1,9 @@
 #pragma once
+#include <ActivationType.h>
 #include <cmath>
 #include <stdexcept>
 
-#include "ActivationType.h"
+
 
 // --- активации ---
 

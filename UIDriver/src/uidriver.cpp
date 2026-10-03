@@ -1,12 +1,11 @@
-#include "uidriver.h"
-#include "utils.h"
+
 #include <cmath>
+#include <fstream>
 #include <QCoreApplication>
-#include <QMutexLocker>
-#include <istream>
 #include <ostream>
-#include <QFileDialog>
 #include <QDebug>
+#include <uidriver.h>
+#include <utils.h>
 
 #define DEBUG
 

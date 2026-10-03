@@ -1,15 +1,8 @@
 // NeuroNetwork.h
 #pragma once
 
+#include <Layer.h>
 #include <vector>
-#include <ostream>
-#include <istream>
-#include <ostream>
-#include <fstream>
-#include <cmath>
-#include <QDebug>
-
-#include "Layer.h"
 
 class NeuroNetwork {
 private:
@@ -40,7 +33,12 @@ public:
     int getMaxNodes();
     const int getInputSize() const { return inputSize; }  // новый геттер
 
-    void setActivationType(ActivationType &type) { activationType = type; }
+    void setActivationType(ActivationType type) {
+        activationType = type;
+
+        for (auto &layer: layers) {
+        }
+    }
 
     void randomizeWeights();
     void resetValues();

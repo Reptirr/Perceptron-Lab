@@ -4,11 +4,10 @@
 #include <vector>
 #include <QObject>
 #include <filesystem>
+#include <model.h>
+#include <NeuroNetwork.h>
+#include <samples.h>
 
-#include "NeuroNetwork.h"
-#include "model.h"
-#include "defaultmodel.h"
-#include "samples.h"
 
 /*
 посредник между ui и perceptron
@@ -17,7 +16,7 @@
 class UIDriver : public QObject
 {
     Q_OBJECT
-private:
+
     int epochValue = DefaultModel.epochs;
     double lr = DefaultModel.lr;
 

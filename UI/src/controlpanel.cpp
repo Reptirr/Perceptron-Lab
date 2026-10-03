@@ -1,6 +1,5 @@
-#include "controlpanel.h"
-#include "styleloader.h"
 
+#include <controlpanel.h>
 #include <QLabel>
 #include <QSpinBox>
 #include <QVBoxLayout>
@@ -11,6 +10,7 @@
 #include <QString>
 #include <QDoubleSpinBox>
 #include <QFrame>
+#include <uidriver.h>
 
 #define DEBUG
 #ifdef DEBUG

@@ -1,7 +1,7 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#include "NeuroNetwork.h"
+#include <NeuroNetwork.h>
 #include <QMutex>
 
 struct SharedModel {

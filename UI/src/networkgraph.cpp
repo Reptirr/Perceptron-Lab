@@ -1,10 +1,10 @@
-#include "networkgraph.h"
 
 #define DEBUG
 
 #ifdef DEBUG
 #include <QDebug>
 #endif
+#include <networkgraph.h>
 
 NetworkGraph::NetworkGraph(UIDriver *d, int &selectedL, QWidget *parent)
     : QWidget(parent), model(d->getModel()), selectedLayer(selectedL)

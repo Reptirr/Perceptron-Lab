@@ -1,9 +1,9 @@
 #ifndef SAMPLES_H
 #define SAMPLES_H
 
+#include <defaultmodel.h>
 #include <vector>
 #include <QDebug>
-#include "defaultmodel.h"
 
 struct Samples {
     std::vector<std::vector<double>> inputs{

@@ -1,5 +1,6 @@
 // Matrix.cpp
-#include "Matrix.h"
+
+#include <Matrix.h>
 
 inline int Matrix::idx(int r, int c) const {
     return r * cols + c;

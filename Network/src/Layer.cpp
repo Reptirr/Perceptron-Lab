@@ -1,6 +1,6 @@
-#include "Layer.h"
-#include "utils.h"
-#include "ActivationApplicator.h"
+
+#include <ActivationApplicator.h>
+#include <Layer.h>
 
 Layer::Layer(int numNeurons, int numPrevNeurons, ActivationType aType)
     : activationType(aType),
@@ -147,9 +147,13 @@ void Layer::removeNode() {
     zValues.pop_back();
 }
 
+void Layer::setActivationType(ActivationType type) {
+    activationType = type;
+}
+
 // добавляем вес к слою. вызываем при увеличивании кол-ва нод в предыдущем слое
 void Layer::addFromWeight() {
-    weights.addColumn(std::vector<double>(weights.getRows(), 0.0));
+    weights.addColumn(std::vector(weights.getRows(), 0.0));
 
     // prevValues должно отражать новое количество входов
     prevValues.resize(weights.getCols(), 0.0);

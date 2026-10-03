@@ -1,12 +1,12 @@
 #ifndef PREDICTINPUTFIELD_H
 #define PREDICTINPUTFIELD_H
 
+#include <model.h>
 #include <QWidget>
 #include <QGridLayout>
 #include <QDoubleSpinBox>
 #include <QLabel>
-#include "samples.h"
-#include "model.h"
+
 
 // выбор данных для предиктов
 class PredictInputField : public QWidget

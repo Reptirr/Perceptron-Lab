@@ -1,13 +1,11 @@
 #pragma once
 
+#include <ActivationType.h>
+#include <Matrix.h>
 #include <vector>
-#include <ostream>
 
-#include "ActivationType.h"
-#include "Matrix.h"
 
 class Layer {
-private:
     std::vector<double> values;
     std::vector<double> prevValues;
     std::vector<double> zValues;
@@ -32,6 +30,8 @@ public:
     void removeFromWeight();
     void addNode();
     void removeNode();
+
+    void setActivationType(ActivationType type);
 
     void randomizeWeights();
     void resetValues();

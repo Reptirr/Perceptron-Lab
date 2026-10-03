@@ -1,16 +1,14 @@
 #ifndef CONTROLPANEL_H
 #define CONTROLPANEL_H
-
+#include <inputfield.h>
+#include <predictinputfield.h>
 #include <QWidget>
-#include <filesystem>
 
-#include "inputfield.h"
-#include "predictinputfield.h"
 
 class ControlPanel : public QWidget
 {
     Q_OBJECT
-private:
+
     QWidget* createTopWidget(SharedModel &model, UIDriver *uiDriver);
     QWidget* createBottomWidget();
 

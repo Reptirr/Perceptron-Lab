@@ -1,13 +1,9 @@
 #ifndef WIDGET_H
 #define WIDGET_H
-
+#include <controlpanel.h>
+#include <qtmetamacros.h>
 #include <QWidget>
-
-
-#include "controlpanel.h"
-#include "rightpanel.h"
-#include "uidriver.h"
-#include "inputfield.h"
+#include <rightpanel.h>
 
 
 class Widget : public QWidget

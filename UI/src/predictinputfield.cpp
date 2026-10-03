@@ -1,7 +1,7 @@
+#include <predictinputfield.h>
 #include <QFrame>
+#include <utils.h>
 
-#include "predictinputfield.h"
-#include "utils.h"
 
 PredictInputField::PredictInputField(SharedModel& m, std::vector<double> &inputVals) :
     model(m),

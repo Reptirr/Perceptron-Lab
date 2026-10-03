@@ -1,5 +1,6 @@
-#include "NeuroNetwork.h"
-#include "utils.h"
+
+#include <NeuroNetwork.h>
+#include <utils.h>
 
 NeuroNetwork::NeuroNetwork(const std::vector<int> conf, ActivationType activationType1) : activationType(activationType1)
 {

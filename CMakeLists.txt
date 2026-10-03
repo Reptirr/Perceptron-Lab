@@ -11,46 +11,43 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets)
 qt_standard_project_setup()
 
 qt_add_executable(PerceptronLab
-    ActivationApplicator.h
-    ActivationType.h
-    Layer.cpp
-    Layer.h
-    Matrix.h
-    NeuroNetwork.cpp
-    NeuroNetwork.h
+        Network/include/ActivationApplicator.h
+        Network/include/ActivationType.h
+        Network/src/Layer.cpp
+        Network/include/Layer.h
+        Network/include/Matrix.h
+        Network/src/NeuroNetwork.cpp
+        Network/include/NeuroNetwork.h
 
-    Randomizer.h
-    controlpanel.cpp
-    controlpanel.h
-    main.cpp
-    model.h
-    networkgraph.cpp
-    networkgraph.h
-    uidriver.cpp
-    uidriver.h
-    widget.cpp
-    widget.h
-    inputfield.h inputfield.cpp
-    styleloader.h
+        Network/include/Randomizer.h
+        UI/src/controlpanel.cpp
+        UI/include/controlpanel.h
+        UI/main.cpp
+        UIDriver/include/model.h
+        UI/src/networkgraph.cpp
+        UI/include/networkgraph.h
+        UIDriver/src/uidriver.cpp
+        UIDriver/include/uidriver.h
+        UI/src/widget.cpp
+        UI/include/widget.h
+        UI/include/inputfield.h UI/src/inputfield.cpp
+        UI/include/styleloader.h
 
-    resources.qrc
-    utils.h
-    defaultmodel.h
-    samples.h
-    diplom.md
-    predictinputfield.h predictinputfield.cpp
-    rightpanel.h rightpanel.cpp
-    Matrix.cpp
+        resources/resources.qrc
+        UIDriver/include/utils.h
+        UIDriver/include/defaultmodel.h
+        UIDriver/include/samples.h
+
+        UI/include/predictinputfield.h UI/src/predictinputfield.cpp
+        UI/include/rightpanel.h UI/src/rightpanel.cpp
+        Network/src/Matrix.cpp
 )
 
-
-source_group("Network/headers" FILES ActivationApplicator.h ActivationType.h Layer.h Matrix.h NeuroNetwork.h NeuronType.h Randomizer.h)
-source_group("Network/src" FILES Layer.cpp NeuroNetwork.cpp)
-source_group("Ui" FILES main.cpp)
-source_group("Ui/headers" FILES styleloader.h controlpanel.h networkgraph.h widget.h inputfield.h predictinputfield.h rightpanel.h)
-source_group("Ui/src" FILES controlpanel.cpp networkgraph.cpp widget.cpp inputfield.cpp predictinputfield.cpp rightpanel.cpp)
-source_group("UiDriver/headers" FILES model.h uidriver.h utils.h  defaultmodel.h samples.h)
-source_group("UiDriver/src" FILES uidriver.cpp)
+target_include_directories(PerceptronLab PRIVATE
+        Network/include
+        UI/include
+        UIDriver/include
+)
 
 target_link_libraries(PerceptronLab PRIVATE Qt6::Widgets)
 set_target_properties(PerceptronLab PROPERTIES

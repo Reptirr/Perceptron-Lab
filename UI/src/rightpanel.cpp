@@ -1,4 +1,5 @@
-#include "rightpanel.h"
+
+#include <rightpanel.h>
 
 RightPanel::RightPanel(UIDriver *d, QWidget *parent)
     : QWidget{parent}

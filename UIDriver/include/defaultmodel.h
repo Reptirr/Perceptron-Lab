@@ -1,9 +1,10 @@
 #ifndef DEFAULTMODEL_H
 #define DEFAULTMODEL_H
 
+#include <ActivationType.h>
 #include <vector>
 
-#include "ActivationType.h"
+
 
 struct ModelConfig {
     std::vector<int> conf{2,4,5,6,7,1};

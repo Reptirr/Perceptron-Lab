@@ -2,10 +2,11 @@
 #define CONTROLPANEL_H
 #include <inputfield.h>
 #include <predictinputfield.h>
+#include <QScrollArea>
+#include <QScrollBar>
 #include <QWidget>
 
-
-class ControlPanel : public QWidget
+class ControlPanelPrivate : public QWidget
 {
     Q_OBJECT
 
@@ -19,7 +20,7 @@ class ControlPanel : public QWidget
     int epochs = 0;
 
 public:
-    ControlPanel(InputField *InputField, UIDriver *uiDriver, QWidget *parent = nullptr);
+    ControlPanelPrivate(InputField *InputField, UIDriver *uiDriver, QWidget *parent = nullptr);
 
 signals:
     // сигналы от кнопок
@@ -33,5 +34,30 @@ signals:
     void lrValueChanged(double newValue);
     void activationTypeChanged(ActivationType type);
 };
+
+
+
+class ControlPanel : public QScrollArea {
+    ControlPanelPrivate *content{};
+
+public:
+    explicit ControlPanel(InputField *InputField, UIDriver *uiDriver, QWidget *parent = nullptr) :
+    QScrollArea(parent),
+    content(new ControlPanelPrivate(InputField, uiDriver, this)) {
+        setWidget(content);
+
+        setWidgetResizable(true);
+        setFrameShape(NoFrame);
+        setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+        verticalScrollBar()->setAutoFillBackground(false);
+        verticalScrollBar()->setAttribute(Qt::WA_TranslucentBackground);
+    }
+
+    ControlPanelPrivate *controlPanel() {
+        return content;
+    }
+};
+
 
 #endif // CONTROLPANEL_H

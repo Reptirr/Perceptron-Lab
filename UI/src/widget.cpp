@@ -7,13 +7,13 @@
 void Widget::initializeConnects() {
     // ControlPanel -> UIDriver
     // сигналы от кнопок
-    connect(controlPanel, &ControlPanel::predictRequest, uiDriver, &UIDriver::onPredictRequest);
-    connect(controlPanel, &ControlPanel::trainClicked, uiDriver, &UIDriver::onTrainRequest);
-    connect(controlPanel, &ControlPanel::resetClicked, uiDriver, &UIDriver::onResetRequest);
+    connect(controlPanel->controlPanel(), &ControlPanelPrivate::predictRequest, uiDriver, &UIDriver::onPredictRequest);
+    connect(controlPanel->controlPanel(), &ControlPanelPrivate::trainClicked, uiDriver, &UIDriver::onTrainRequest);
+    connect(controlPanel->controlPanel(), &ControlPanelPrivate::resetClicked, uiDriver, &UIDriver::onResetRequest);
     // сигналы о изменении значения
-    connect(controlPanel, &ControlPanel::epochValueChanged, uiDriver, &UIDriver::onEpochValueChanged);
-    connect(controlPanel, &ControlPanel::lrValueChanged, uiDriver, &UIDriver::onLrValueChanged);
-    connect(controlPanel, &ControlPanel::activationTypeChanged, uiDriver, &UIDriver::onActivationTypeChanged);
+    connect(controlPanel->controlPanel(), &ControlPanelPrivate::epochValueChanged, uiDriver, &UIDriver::onEpochValueChanged);
+    connect(controlPanel->controlPanel(), &ControlPanelPrivate::lrValueChanged, uiDriver, &UIDriver::onLrValueChanged);
+    connect(controlPanel->controlPanel(), &ControlPanelPrivate::activationTypeChanged, uiDriver, &UIDriver::onActivationTypeChanged);
 
     // UIDriver <-> InputField
     // реквесты
@@ -44,18 +44,19 @@ Widget::Widget(QWidget *parent)
     auto *split = new QWidget();
     rightPanel = new RightPanel(uiDriver, this);
 
-    controlPanel->setAutoFillBackground(true);
-    QPalette pal = controlPanel->palette();
+    controlPanel->controlPanel()->setAutoFillBackground(true);
+    QPalette pal = controlPanel->controlPanel()->palette();
     pal.setColor(QPalette::Window, QColor("#232323"));
-    controlPanel->setPalette(pal);
+    controlPanel->controlPanel()->setPalette(pal);
     split->setStyleSheet("background-color: #2C2C2C; border: none");
 
+    controlPanel->controlPanel()->setFixedWidth(300);
     controlPanel->setFixedWidth(300);
     split->setFixedWidth(4);
 
     layout->setSpacing(0);
     layout->setContentsMargins(0, 0, 0, 0);
-    controlPanel->setContentsMargins(0, 0, 0, 0);
+    controlPanel->controlPanel()->setContentsMargins(0, 0, 0, 0);
     rightPanel->setContentsMargins(0, 0, 0, 0);
     split->setContentsMargins(0, 0, 0, 0);
 

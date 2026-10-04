@@ -19,7 +19,7 @@
 
 
 // верхний виджет
-QWidget* ControlPanel::createTopWidget(SharedModel &model, UIDriver *uiDriver) {
+QWidget* ControlPanelPrivate::createTopWidget(SharedModel &model, UIDriver *uiDriver) {
     auto *grid = new QGridLayout();
 
     // top widget
@@ -51,7 +51,7 @@ QWidget* ControlPanel::createTopWidget(SharedModel &model, UIDriver *uiDriver) {
     });
 
     connect(resetButton, &QPushButton::clicked,
-            this, &ControlPanel::resetClicked);
+            this, &ControlPanelPrivate::resetClicked);
 
     // connect(importButton, &QPushButton::clicked,
     //         this, [&](){
@@ -86,7 +86,7 @@ QWidget* ControlPanel::createTopWidget(SharedModel &model, UIDriver *uiDriver) {
     return widget;
 }
 
-QWidget* ControlPanel::createBottomWidget() {
+QWidget* ControlPanelPrivate::createBottomWidget() {
     auto *grid = new QGridLayout();
     grid->setAlignment(Qt::AlignTop);
 
@@ -137,11 +137,11 @@ QWidget* ControlPanel::createBottomWidget() {
 
     // коннекты кликов кнопок к публичным сигналам ControlPanel
     connect(trainBtn, &QPushButton::clicked,
-            this, &ControlPanel::trainClicked);
+            this, &ControlPanelPrivate::trainClicked);
     connect(epochInput, &QSpinBox::valueChanged,
-            this, &ControlPanel::epochValueChanged);
+            this, &ControlPanelPrivate::epochValueChanged);
     connect(lrInput, &QDoubleSpinBox::valueChanged,
-            this, &ControlPanel::lrValueChanged);
+            this, &ControlPanelPrivate::lrValueChanged);
     connect(activationCombo, &QComboBox::currentIndexChanged,
             this, [this, activationCombo](int index){
                 emit activationTypeChanged(
@@ -151,9 +151,9 @@ QWidget* ControlPanel::createBottomWidget() {
 
 
 #ifdef DEBUG
-    connect(this, &ControlPanel::trainClicked,
+    connect(this, &ControlPanelPrivate::trainClicked,
             this, [] { qDebug() << "[DEBUG] trainClicked"; });
-    connect(this, &ControlPanel::epochValueChanged,
+    connect(this, &ControlPanelPrivate::epochValueChanged,
             this, [](int x) { qDebug() << "[DEBUG] epochValueChanged to " << x; });
 #endif
 
@@ -180,7 +180,7 @@ QWidget* ControlPanel::createBottomWidget() {
 
 
 
-ControlPanel::ControlPanel(InputField *inputF, UIDriver *uiDriver, QWidget *parent) : QWidget(parent), inputField(inputF) {
+ControlPanelPrivate::ControlPanelPrivate(InputField *inputF, UIDriver *uiDriver, QWidget *parent) : QWidget(parent), inputField(inputF) {
     // левый виджет - панель с параметрами
     // сверху кнопки прохода/сброса/рандом/сохранить/загрузить
     // снизу поле тренировок, кнопка тренировки, ввод эпох и начальных значений x, y

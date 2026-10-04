@@ -133,9 +133,10 @@ void NetworkGraph::mousePressEvent(QMouseEvent *event)
                            usedHeight,
                            objectSize);
 
-    // Повторный клик по уже выбранному слою снимает выделение
+    // повторный клик по уже выбранному слою снимает выделение
     if (layer == selectedLayer) {
         selectedLayer = -1;
+        emit selectedLayerChanged();
         update();
         return;
     }

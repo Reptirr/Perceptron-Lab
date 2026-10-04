@@ -5,6 +5,7 @@
         <file>spin.qss</file>
         <file>frame.qss</file>
         <file>combobox.qss</file>
+        <file>scrollarea.qss</file>
         <file>arrow-down.svg</file>
     </qresource>
 </RCC>

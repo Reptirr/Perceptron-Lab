@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Widgets Charts)
 
 qt_standard_project_setup()
 
@@ -33,7 +33,7 @@ qt_add_executable(PerceptronLab
         UI/include/inputfield.h UI/src/inputfield.cpp
         UI/include/styleloader.h
 
-        resources/resources.qrc
+        styles/resources.qrc
         UIDriver/include/utils.h
         UIDriver/include/defaultmodel.h
         UIDriver/include/samples.h

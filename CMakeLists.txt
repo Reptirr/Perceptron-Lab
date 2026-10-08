@@ -55,3 +55,34 @@ set_target_properties(PerceptronLab PROPERTIES
     AUTOUIC ON
     AUTORCC ON
 )
+
+
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    include(GNUInstallDirs)
+
+    set_target_properties(PerceptronLab PROPERTIES WIN32_EXECUTABLE ON)
+
+    install(TARGETS PerceptronLab
+            BUNDLE  DESTINATION .
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    )
+
+    qt_generate_deploy_app_script(
+            TARGET PerceptronLab
+            OUTPUT_SCRIPT deploy_script
+            NO_UNSUPPORTED_PLATFORM_ERROR
+    )
+    install(SCRIPT ${deploy_script})
+
+    set(DIST_DIR "${CMAKE_BINARY_DIR}/dist")
+    add_custom_target(dist
+            COMMAND ${CMAKE_COMMAND} -E rm -rf "${DIST_DIR}"
+            COMMAND ${CMAKE_COMMAND} --install "${CMAKE_BINARY_DIR}"
+            --prefix "${DIST_DIR}" --config Release
+            DEPENDS PerceptronLab
+            COMMENT "Creating distributable in ${DIST_DIR}"
+            VERBATIM
+    )
+else()
+    message(STATUS "Target 'dist' is available only in Release build")
+endif()

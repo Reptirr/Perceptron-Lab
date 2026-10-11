@@ -17,7 +17,8 @@ UIDriver::UIDriver(QObject *parent) : QObject(parent), nn(DefaultModel.conf, Def
     samples.inputs[0].resize(DefaultModel.conf[0]);
     samples.targets[0].resize(DefaultModel.conf.back());
 
-    trainer = new Trainer(samples, model);
+    lr = DefaultModel.lr;
+    trainer = new Trainer(samples, model, lr);
 
     initConnects();
 }
@@ -84,6 +85,8 @@ void UIDriver::onResetRequest() {
     resetValues();
     randWeigts();
     resetBias();
+
+    trainer->onReset();
 }
 
 void UIDriver::resetValues() {

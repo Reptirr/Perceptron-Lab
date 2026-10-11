@@ -12,6 +12,7 @@ class Trainer : public QObject {
     SharedModel &model;
     double lr{};
 
+    int e{};
     bool need_stop{};
     std::thread trainThread{};
 
@@ -27,7 +28,8 @@ public slots:
     void onTrainRequest();
     void onStopTrain();
     void onLrChanged(double lr);
+    void onReset();
 
 public:
-    Trainer(Samples &samples, SharedModel &shared_model);
+    Trainer(Samples &samples, SharedModel &shared_model, double lr);
 };

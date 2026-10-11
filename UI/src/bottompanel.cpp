@@ -29,6 +29,7 @@ QHBoxLayout *BottomPanel::buildTop() {
     // pause
     auto *pauseBtn = new QToolButton();
     pauseBtn->setText("Пауза");
+    pauseBtn->setEnabled(false);
 
     // reset
     auto *resetBtn = new QToolButton();
@@ -100,6 +101,7 @@ QHBoxLayout *BottomPanel::buildTop() {
     return layout;
 }
 void BottomPanel::onNewErrorPoint(int epoch, double err) {
+    std::cout << "new point, epoch: " << epoch << ", err: " << err << std::endl;
     lossChart->addPoint(epoch, err);
 }
 

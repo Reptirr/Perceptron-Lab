@@ -9,8 +9,6 @@ void Trainer::infiniteTrain() {
     std::vector<double> duty{};
     int duty_interval = -1;
 
-    int e = 0;
-
     // тренируем по samples
     for (;; e++) {
         double totalLoss = 0.0;
@@ -25,12 +23,6 @@ void Trainer::infiniteTrain() {
             if (need_stop) {
                 need_stop = false;
                 emit sharedModelUpdated();
-
-                if (!duty.empty()) {
-                    emit epocheFinish(e, std::accumulate(duty.begin(), duty.end(), 0.0) / duty.size());
-                    duty.clear();
-                }
-
                 return;
             }
 
@@ -50,21 +42,17 @@ void Trainer::infiniteTrain() {
         totalLoss /= inputs.size();
         duty.push_back(totalLoss);
 
-        if (duty.size() == duty_interval) {
+        if (duty.size() >= duty_interval || e == 1) {
             emit epocheFinish(e, std::accumulate(duty.begin(), duty.end(), 0.0) / duty.size());
             duty.clear();
         }
 
         std::cout << "Epoch " << std::setw(4) << e
                   << " | Loss: " << totalLoss
-                  << " | duty size: " << duty.size() << "\n";
-
-        // std::this_thread::sleep_for(std::chrono::milliseconds(500));
-    }
-
-    if (!duty.empty()) {
-        emit epocheFinish(e, std::accumulate(duty.begin(), duty.end(), 0.0) / duty.size());
-        duty.clear();
+                  << " | dur: " << dur
+                  << " | duty size: " << duty.size()
+                  << " | duty_interval: " << duty_interval
+                  << "\n";
     }
 
     emit sharedModelUpdated();
@@ -87,6 +75,10 @@ void Trainer::onLrChanged(double lr1) {
     lr = lr1;
 }
 
-Trainer::Trainer(Samples &samples1, SharedModel &shared_model) : samples(samples1), model(shared_model) {
+void Trainer::onReset() {
+    e = 0;
+}
+
+Trainer::Trainer(Samples &samples1, SharedModel &shared_model, double lr1) : samples(samples1), model(shared_model), lr(lr1) {
 
 }

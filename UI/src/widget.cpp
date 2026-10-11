@@ -88,6 +88,7 @@ Widget::Widget(QWidget *parent)
 
     bottomPanel->setAutoFillBackground(true);
     bottomPanel->setPalette(pal);
+    // bottomPanel.setHe
     // bottomPanel->setFixedHeight()
     bottomLayout->addWidget(bottomPanel);
 

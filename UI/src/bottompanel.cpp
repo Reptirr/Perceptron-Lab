@@ -7,53 +7,37 @@
 #include <QValueAxis>
 #include <QToolButton>
 
+#include "uidriver.h"
+
 QChartView *BottomPanel::buildChart() {
-    series = new QLineSeries();
+    lossChart = new LossChart();
 
-    // y = x*x
-    for (int x = 0; x < 100; x++)
-        series->append(x, x*x);
-
-    chart = new QChart();
-    chart->legend()->hide();
-    chart->setMargins(QMargins(0, 0, 0, 0));
-    chart->setContentsMargins(0, 0, 0, 0);
-    chart->addSeries(series);
-
-    auto *axis_x = new QValueAxis();
-    axis_x->setTitleText("Координата X");
-    auto *axis_y = new QValueAxis();
-    axis_y->setTitleText("Координата Y");
-
-    chart->addAxis(axis_x, Qt::AlignBottom);
-    chart->addAxis(axis_y, Qt::AlignLeft);
-    series->attachAxis(axis_x);
-    series->attachAxis(axis_y);
-
-    axis_x->applyNiceNumbers();
-    axis_y->applyNiceNumbers();
-
-    auto *view = new QChartView(chart);
-    view->setRenderHints(QPainter::Antialiasing);
-
-    return view;
+    return lossChart;
 }
 
-QVBoxLayout *BottomPanel::buildInputPanel() {
-    auto *grid = new QGridLayout();
+void BottomPanel::onReset() {
+    lossChart->reset();
+}
+
+QHBoxLayout *BottomPanel::buildTop() {
+    auto *layout = new QHBoxLayout();
 
     // start
     auto *startBtn = new QToolButton();
-    startBtn->setText("Запустить обучение");
+    startBtn->setText("Запуск");
 
-    // stop
-    auto *stopBtn = new QToolButton();
-    stopBtn->setText("Остановить обучение");
+    // pause
+    auto *pauseBtn = new QToolButton();
+    pauseBtn->setText("Пауза");
+
+    // reset
+    auto *resetBtn = new QToolButton();
+    resetBtn->setText("Сбросить");
 
     // set lr
     auto *lrLabel = new QLabel("Введите скорость обучения");
     auto *lrSpin = new QDoubleSpinBox();
-    lrSpin->setValue(0.1);
+    lrSpin->setValue(0.01);
 
     // set activation
     auto *activationLabel = new QLabel("Выберите тип активации:");
@@ -65,37 +49,65 @@ QVBoxLayout *BottomPanel::buildInputPanel() {
     activationCombo->addItem("Leaky ReLu",  (int)ActivationType::LEAKYRELU);
     activationCombo->addItem("Step",        (int)ActivationType::STEP);
 
-    grid->addWidget(startBtn, 0, 0);
-    grid->addWidget(stopBtn, 0, 1);
+    layout->addWidget(startBtn);
+    layout->addWidget(pauseBtn);
+    layout->addWidget(resetBtn);
 
-    grid->addWidget(lrLabel, 1, 0);
-    grid->addWidget(lrSpin, 1, 1);
-
-    grid->addWidget(activationLabel, 2, 0);
-    grid->addWidget(activationCombo, 2, 1);
-
-
-
-    auto *widget = new QWidget(this);
-    widget->setLayout(grid);
-    widget->setFixedWidth(300);
-
-    auto *layout = new QVBoxLayout();
-    layout->addWidget(widget);
     layout->addStretch();
+
+    layout->addWidget(lrLabel);
+    layout->addWidget(lrSpin);
+
+    layout->addWidget(activationLabel);
+    layout->addWidget(activationCombo);
+
+    // init connects
+    connect(startBtn, &QToolButton::clicked,
+            this, &BottomPanel::startTrainRequest);
+    connect(startBtn, &QToolButton::clicked,
+            this, [startBtn, pauseBtn, this] {
+                training = true;
+
+                startBtn->setEnabled(false);
+                pauseBtn->setEnabled(true);
+            });
+    connect(pauseBtn, &QToolButton::clicked,
+            this, &BottomPanel::stopTrainRequest);
+    connect(pauseBtn, &QToolButton::clicked,
+            this, [startBtn, pauseBtn, this] {
+                training = false;
+
+                startBtn->setEnabled(true);
+                pauseBtn->setEnabled(false);
+            });
+    connect(resetBtn, &QToolButton::clicked,
+            this, &BottomPanel::resetRequest);
+    connect(resetBtn, &QToolButton::clicked,
+            this, [pauseBtn, this] {
+                if (training) pauseBtn->click();
+
+                onReset();
+            });
+    connect(lrSpin, &QDoubleSpinBox::valueChanged,
+            this, &BottomPanel::lrChanged);
+    connect(activationCombo, &QComboBox::currentIndexChanged,
+            this, [this, activationCombo](int index) {
+                emit activationChanged(
+                    static_cast<ActivationType>(activationCombo->itemData(index).toInt())
+                );
+            });
 
     return layout;
 }
-
-void BottomPanel::onNewErrorPoint(int epoch_i, double err) {
-    series->append(epoch_i, err);
+void BottomPanel::onNewErrorPoint(int epoch, double err) {
+    lossChart->addPoint(epoch, err);
 }
 
 BottomPanel::BottomPanel(QWidget *parent) : QWidget(parent) {
-    auto *layout = new QHBoxLayout(this);
+    auto *layout = new QVBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
 
-    layout->addLayout(buildInputPanel());
+    layout->addLayout(buildTop());
     layout->addWidget(buildChart());
 }

@@ -3,23 +3,46 @@
 #include <QLineSeries>
 #include <QChartView>
 #include <QGridLayout>
+#include <ActivationType.h>
+#include <LossChart.h>
+#include <QValueAxis>
+
+#include "uidriver.h"
+
+/*
+ *                     top
+ *                      |
+ * +-------------------------------------------+
+ * | Запуск Пауза Сброс  lr: [0.1] act: [relu] |
+ * +-------------------------------------------+
+ * |            ГРАФИК                         |
+ * |                                           |
+ * +-------------------------------------------+
+ *                      |
+ *                  chartView
+ *
+ */
 
 class BottomPanel : public QWidget {
     Q_OBJECT
 
-    QChart *chart{};
-    QLineSeries *series{};
+    LossChart *lossChart{};
+    bool training{};
 
+    QHBoxLayout *buildTop();
     QChartView *buildChart();
 
-    QVBoxLayout *buildInputPanel();
+    void onReset();
 
-    signals:
-        void startTrainRequest();
+signals:
+    void startTrainRequest();
     void stopTrainRequest();
+    void resetRequest();
+    void lrChanged(double lr);
+    void activationChanged(ActivationType type);
 
 public slots:
-    void onNewErrorPoint(int epoch_i, double err);
+    void onNewErrorPoint(int epoch, double err);
 
 public:
     BottomPanel(QWidget *parent = nullptr);

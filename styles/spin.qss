@@ -6,6 +6,8 @@ QSpinBox, QDoubleSpinBox {
     border-radius: 6px;
 
     padding: 4px 8px;
+
+    max-height: 23px;
 }
 
 QSpinBox:hover, QDoubleSpinBox:hover {

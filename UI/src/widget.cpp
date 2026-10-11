@@ -8,12 +8,19 @@ void Widget::initializeConnects() {
     // ControlPanel -> UIDriver
     // сигналы от кнопок
     connect(controlPanel->controlPanel(), &ControlPanelPrivate::predictRequest, uiDriver, &UIDriver::onPredictRequest);
-    connect(controlPanel->controlPanel(), &ControlPanelPrivate::trainClicked, uiDriver, &UIDriver::onTrainRequest);
-    connect(controlPanel->controlPanel(), &ControlPanelPrivate::resetClicked, uiDriver, &UIDriver::onResetRequest);
+
+    // BottomPanel -> UIDriver
+    // сигналы от кнопок
+    connect(bottomPanel, &BottomPanel::startTrainRequest, uiDriver, &UIDriver::onTrainRequest);
+    connect(bottomPanel, &BottomPanel::stopTrainRequest, uiDriver, &UIDriver::onStopTrainRequest);
+    connect(bottomPanel, &BottomPanel::resetRequest, uiDriver, &UIDriver::onResetRequest);
     // сигналы о изменении значения
-    connect(controlPanel->controlPanel(), &ControlPanelPrivate::epochValueChanged, uiDriver, &UIDriver::onEpochValueChanged);
-    connect(controlPanel->controlPanel(), &ControlPanelPrivate::lrValueChanged, uiDriver, &UIDriver::onLrValueChanged);
-    connect(controlPanel->controlPanel(), &ControlPanelPrivate::activationTypeChanged, uiDriver, &UIDriver::onActivationTypeChanged);
+    connect(bottomPanel, &BottomPanel::lrChanged, uiDriver, &UIDriver::onLrValueChanged);
+    connect(bottomPanel, &BottomPanel::activationChanged, uiDriver, &UIDriver::onActivationTypeChanged);
+
+    // UIDriver -> BottomPanel
+    // сигналы о изменении значения
+    connect(uiDriver, &UIDriver::epocheFinish, bottomPanel, &BottomPanel::onNewErrorPoint);
 
     // UIDriver <-> InputField
     // реквесты
@@ -38,10 +45,6 @@ Widget::Widget(QWidget *parent)
     // ресайз
     resize(1000, 700);
 
-    auto *generalLayout = new QVBoxLayout(this);
-    generalLayout->setContentsMargins(0, 0, 0, 0);
-    generalLayout->setSpacing(0);
-
     // ----------
     // UP
     // ----------
@@ -51,14 +54,16 @@ Widget::Widget(QWidget *parent)
     auto *split = new QWidget();
     rightPanel = new RightPanel(uiDriver, this);
 
-    controlPanel->controlPanel()->setAutoFillBackground(true);
+    controlPanel->controlPanel()->setStyleSheet("background: #232323");
     QPalette pal = controlPanel->controlPanel()->palette();
+    controlPanel->controlPanel()->setAutoFillBackground(true);
     pal.setColor(QPalette::Window, QColor("#232323"));
+    controlPanel->setPalette(pal);
     controlPanel->controlPanel()->setPalette(pal);
     split->setStyleSheet("background-color: #2C2C2C; border: none");
 
-    controlPanel->controlPanel()->setFixedWidth(300);
-    controlPanel->setFixedWidth(300);
+    controlPanel->controlPanel()->setFixedWidth(325);
+    controlPanel->setFixedWidth(325);
     split->setFixedWidth(4);
 
     upLayout->setSpacing(0);
@@ -78,17 +83,31 @@ Widget::Widget(QWidget *parent)
     bottomLayout->setContentsMargins(0, 0, 0, 0);
     bottomLayout->setSpacing(0);
 
-    // auto *split1 = new QSplitter(this);
-    // split1->setFixedHeight(4);
-    // split1->setStyleSheet("background-color: #2C2C2C; border: none");
-    //
-    // bottomPanel->setAutoFillBackground(true);
-    // bottomPanel->setPalette(pal);
-    // bottomLayout->addWidget(bottomPanel);
+    auto *split1 = new QSplitter(this);
+    split1->setOrientation(Qt::Vertical);
 
-    generalLayout->addLayout(upLayout);
-    // generalLayout->addWidget(split1);
-    generalLayout->addLayout(bottomLayout);
+    bottomPanel->setAutoFillBackground(true);
+    bottomPanel->setPalette(pal);
+    // bottomPanel.setHe
+    // bottomPanel->setFixedHeight()
+    bottomLayout->addWidget(bottomPanel);
+
+    // split init
+    auto *upWidget = new QWidget();
+    upWidget->setLayout(upLayout);
+
+    auto bottomWidget = new QWidget();
+    bottomWidget->setLayout(bottomLayout);
+
+    split1->addWidget(upWidget);
+    split1->addWidget(bottomWidget);
+
+    auto *generalLayout = new QHBoxLayout(this);
+    generalLayout->setContentsMargins(0, 0, 0, 0);
+    generalLayout->setSpacing(0);
+
+    generalLayout->addWidget(split1);
+
 
     // коннектим
     initializeConnects();

@@ -9,20 +9,24 @@
 
 #define DEBUG
 
-UIDriver::UIDriver(QObject *parent) : QObject(parent), nn(DefaultModel.conf, DefaultModel.activationType)
-{
+UIDriver::UIDriver(QObject *parent) : QObject(parent), nn(DefaultModel.conf, DefaultModel.activationType) {
     model.nn = &nn;
-    model.inputValues = std::vector<double>(DefaultModel.conf[0], 0.0);
+    model.inputValues = std::vector(DefaultModel.conf[0], 0.0);
 
     // ресайз samples под defaultmodel
     samples.inputs[0].resize(DefaultModel.conf[0]);
     samples.targets[0].resize(DefaultModel.conf.back());
+
+    lr = DefaultModel.lr;
+    trainer = new Trainer(samples, model, lr);
+
+    initConnects();
 }
 
 // дата менеджемент
 void UIDriver::onCreateSampleRequest() {
-    samples.inputs.push_back(std::vector<double>(samples.inputs[0].size(), 0.0));
-    samples.targets.push_back(std::vector<double>(samples.targets[0].size(), 0.0));
+    samples.inputs.emplace_back(samples.inputs[0].size(), 0.0);
+    samples.targets.emplace_back(samples.targets[0].size(), 0.0);
 
     emit samplesUpdated();
 }
@@ -49,41 +53,14 @@ void UIDriver::onPredictRequest(std::vector<double> inputData) {
 }
 
 void UIDriver::onTrainRequest() {
-    // чекаем на разрешенность
-    if (!checkIsAllowed()) return;
-
-#ifdef DEBUG
-    qDebug() << "[DEBUG] onTrainRequest, input=" << vecToString(samples.inputs) << "; target=" << vecToString(samples.targets) << "; lr=" << lr;
-#endif
-
-    std::vector<std::vector<double>>& inputs = samples.inputs;
-    std::vector<std::vector<double>>& targets = samples.targets;
-
-    // тренируем по samples
-    for (int e = 0; e < epochValue; e++) {
-        double totalLoss = 0.0;
-
-        for (size_t i = 0; i < inputs.size(); i++) {
-
-            QMutexLocker locker(&model.mtx);
-            std::vector<double> out = nn.forward(inputs[i]);
-
-            totalLoss += nn.loss(out, targets[i]);
-
-            // один шаг обучения
-            nn.train(inputs[i], targets[i], lr);
-        }
-
-        totalLoss /= inputs.size();
-
-
-        std::cout << "Epoch " << std::setw(4) << e
-                  << " | Loss: " << totalLoss << "\n";
-
-    }
-    resetValues();
-    emit sharedModelUpdated();
+    emit trainRequest();
 }
+
+void UIDriver::onStopTrainRequest() {
+    emit stopTrainRequest();
+}
+
+
 void UIDriver::onImportRequest(std::string pathToFile) {
     qDebug() << "[DEBUG] importRequest to" << pathToFile;
 
@@ -99,11 +76,17 @@ void UIDriver::onExportRequest(std::string pathToFile) {
     nn.saveModel(to);
 }
 
+void UIDriver::onLrValueChanged(double val) {
+    emit lrChanged(val);
+}
+
 
 void UIDriver::onResetRequest() {
     resetValues();
     randWeigts();
     resetBias();
+
+    trainer->onReset();
 }
 
 void UIDriver::resetValues() {
@@ -119,14 +102,6 @@ void UIDriver::resetBias() {
     emit sharedModelUpdated();
 }
 
-// сигналы о изменении значений
-void UIDriver::onEpochValueChanged(int newValue) { epochValue = newValue; }
-void UIDriver::onLrValueChanged(double val) {
-    if (0 <= val) {
-        lr = val;
-        qDebug() << "[DEBUG] onLrValueChanged to" << val;
-    }
-}
 void UIDriver::onActivationTypeChanged(ActivationType type) {
     qDebug() << "[DEBUG] onActivationTypeChanged to" << (int)type;
     nn.setActivationType(type);
@@ -178,8 +153,6 @@ void UIDriver::onRemoveNode(int layerIndex)
     emit samplesUpdated();
     emit sharedModelUpdated();
 }
-
-#include <cmath>
 
 #include <QDebug>
 
@@ -281,4 +254,22 @@ bool UIDriver::checkIsAllowed()
 
     qDebug() << "[checkIsAllowed] OK";
     return true;
+}
+
+void UIDriver::initConnects() {
+    // UIDriver -> Trainer
+    connect(this, &UIDriver::trainRequest, trainer, [this] {
+        trainer->onTrainRequest();
+    });
+    connect(this, &UIDriver::stopTrainRequest, trainer, [this] {
+        trainer->onStopTrain();
+    });
+    connect(this, &UIDriver::lrChanged, trainer, [this](double lr) {
+        trainer->onLrChanged(lr);
+    });
+
+    // Trainer -> UIDriver
+    connect(trainer, &Trainer::sharedModelUpdated, this, &UIDriver::sharedModelUpdated);
+    connect(trainer, &Trainer::epocheFinish, this, &UIDriver::epocheFinish);
+
 }

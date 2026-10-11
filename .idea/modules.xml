@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/Perceptron-Lab.iml" filepath="$PROJECT_DIR$/.idea/Perceptron-Lab.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/PerceptronLab.iml" filepath="$PROJECT_DIR$/.idea/PerceptronLab.iml" />
     </modules>
   </component>

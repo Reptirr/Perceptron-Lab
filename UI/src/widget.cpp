@@ -33,12 +33,19 @@ Widget::Widget(QWidget *parent)
     // создаем компоненты
     uiDriver = new UIDriver(this);
     inputField = new InputField(DefaultModel.conf[0], DefaultModel.conf.back(), uiDriver, uiDriver->getSamples(), this);
+    bottomPanel = new BottomPanel(this);
 
     // ресайз
     resize(1000, 700);
 
-    // место для главного лайаута
-    auto *layout = new QHBoxLayout(this);
+    auto *generalLayout = new QVBoxLayout(this);
+    generalLayout->setContentsMargins(0, 0, 0, 0);
+    generalLayout->setSpacing(0);
+
+    // ----------
+    // UP
+    // ----------
+    auto *upLayout = new QHBoxLayout(this);
 
     controlPanel = new ControlPanel(inputField, uiDriver, this);
     auto *split = new QWidget();
@@ -54,17 +61,34 @@ Widget::Widget(QWidget *parent)
     controlPanel->setFixedWidth(300);
     split->setFixedWidth(4);
 
-    layout->setSpacing(0);
-    layout->setContentsMargins(0, 0, 0, 0);
+    upLayout->setSpacing(0);
+    upLayout->setContentsMargins(0, 0, 0, 0);
     controlPanel->controlPanel()->setContentsMargins(0, 0, 0, 0);
     rightPanel->setContentsMargins(0, 0, 0, 0);
     split->setContentsMargins(0, 0, 0, 0);
 
-    layout->addWidget(controlPanel);
-    layout->addWidget(split);
-    layout->addWidget(rightPanel);
+    upLayout->addWidget(controlPanel);
+    upLayout->addWidget(split);
+    upLayout->addWidget(rightPanel);
 
-    setLayout(layout);
+    // -----------
+    // BOTTOM
+    // -----------
+    auto *bottomLayout = new QHBoxLayout();
+    bottomLayout->setContentsMargins(0, 0, 0, 0);
+    bottomLayout->setSpacing(0);
+
+    // auto *split1 = new QSplitter(this);
+    // split1->setFixedHeight(4);
+    // split1->setStyleSheet("background-color: #2C2C2C; border: none");
+    //
+    // bottomPanel->setAutoFillBackground(true);
+    // bottomPanel->setPalette(pal);
+    // bottomLayout->addWidget(bottomPanel);
+
+    generalLayout->addLayout(upLayout);
+    // generalLayout->addWidget(split1);
+    generalLayout->addLayout(bottomLayout);
 
     // коннектим
     initializeConnects();

@@ -86,6 +86,23 @@ QWidget* ControlPanelPrivate::createTopWidget(SharedModel &model, UIDriver *uiDr
     return widget;
 }
 
+class MyDoubleSpinBox : public QDoubleSpinBox {
+public:
+    using QDoubleSpinBox::QDoubleSpinBox;
+
+    QString textFromValue(double value) const override {
+        QString s = locale().toString(value, 'f', decimals());
+        const QString dp = locale().decimalPoint();
+        if (s.contains(dp)) {
+            while (s.endsWith('0'))
+                s.chop(1);
+            if (s.endsWith(dp))
+                s.chop(dp.size());
+        }
+        return s;
+    }
+};
+
 QWidget* ControlPanelPrivate::createBottomWidget() {
     auto *grid = new QGridLayout();
     grid->setAlignment(Qt::AlignTop);
@@ -103,13 +120,15 @@ QWidget* ControlPanelPrivate::createBottomWidget() {
 
     // Параметр lr (3)
     auto *lrLabel = new QLabel("Введите скорость обучения: ");
-    auto *lrInput = new QDoubleSpinBox();
+    auto *lrInput = new MyDoubleSpinBox();
 
     // Выбор функции активации (4)
     auto *activationLabel = new QLabel("Выберите тип активации:");
     auto *activationCombo = new QComboBox();
 
     activationCombo->setCurrentIndex(0);
+    lrInput->setRange(0, 100000);
+    lrInput->setDecimals(10);
     lrInput->setValue(0.01);
     activationCombo->addItem("ReLu",        (int)ActivationType::RELU);
     activationCombo->addItem("Sigmoid",     (int)ActivationType::SIGMOID);

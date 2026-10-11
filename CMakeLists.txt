@@ -60,8 +60,6 @@ set_target_properties(PerceptronLab PROPERTIES
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
     include(GNUInstallDirs)
 
-    set_target_properties(PerceptronLab PROPERTIES WIN32_EXECUTABLE ON)
-
     install(TARGETS PerceptronLab
             BUNDLE  DESTINATION .
             RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
@@ -83,6 +81,4 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
             COMMENT "Creating distributable in ${DIST_DIR}"
             VERBATIM
     )
-else()
-    message(STATUS "Target 'dist' is available only in Release build")
 endif()

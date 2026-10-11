@@ -16,6 +16,12 @@ QScrollBar::handle:vertical {
     min-height: 30px;
 }
 
+QScrollBar::handle:vertical::hover {
+    background: rgba(185, 185, 185, 150);
+    border-radius: 2px;
+    min-height: 30px;
+}
+
 QScrollBar::add-line:vertical,
 QScrollBar::sub-line:vertical {
     height: 0;

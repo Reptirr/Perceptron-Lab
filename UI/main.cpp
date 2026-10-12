@@ -12,6 +12,8 @@ int main(int argc, char *argv[])
 
     const QString style = loadStyle(":/styles/label.qss") +
                           loadStyle(":/styles/pushbutton.qss") +
+                          loadStyle(":/styles/toolbutton.qss") +
+                          loadStyle(":/styles/split.qss") +
                           loadStyle(":/styles/spin.qss") +
                           loadStyle(":/styles/frame.qss") +
                           loadStyle(":/styles/combobox.qss") +

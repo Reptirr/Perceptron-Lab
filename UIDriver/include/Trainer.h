@@ -16,7 +16,7 @@ class Trainer : public QObject {
     bool need_stop{};
     std::thread trainThread{};
 
-    std::chrono::milliseconds need_interval{300};
+    std::chrono::nanoseconds need_interval{ std::chrono::milliseconds{300} };
 
     void infiniteTrain();
 

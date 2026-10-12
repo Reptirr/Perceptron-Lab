@@ -32,18 +32,23 @@ void Trainer::infiniteTrain() {
 
         auto end = std::chrono::steady_clock::now();
 
-        auto dur = end - start;
+        auto dur = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
 
-        if (e == 0) {
-            duty_interval = static_cast<int>(need_interval / dur);
-            if (duty_interval < 1) duty_interval = 1;
-        }
+        duty_interval = static_cast<int>(need_interval / dur);
+        if (duty_interval < 1) duty_interval = 1;
+
+        std::cout << "init duty_interval. "
+                  << "dur: " << dur
+                  << " | need_interval: " << need_interval
+                  << " | duty_interval: " << duty_interval
+                  << "\n";
 
         totalLoss /= inputs.size();
         duty.push_back(totalLoss);
 
         if (duty.size() >= duty_interval || e == 1) {
             emit epocheFinish(e, std::accumulate(duty.begin(), duty.end(), 0.0) / duty.size());
+            emit sharedModelUpdated();
             duty.clear();
         }
 
@@ -51,7 +56,6 @@ void Trainer::infiniteTrain() {
                   << " | Loss: " << totalLoss
                   << " | dur: " << dur
                   << " | duty size: " << duty.size()
-                  << " | duty_interval: " << duty_interval
                   << "\n";
     }
 

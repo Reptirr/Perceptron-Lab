@@ -1,17 +1,10 @@
 #ifndef NETWORKGRAPH_H
 #define NETWORKGRAPH_H
 
-#include <QWidget>
 #include <QPainter>
-#include <QtGlobal>
-#include <QMutexLocker>
-#include <algorithm>
-#include <vector>
 #include <QMouseEvent>
 #include <cmath>
 #include <model.h>
-#include <QRectF>
-#include <QHBoxLayout>
 #include <QLabel>
 #include <uidriver.h>
 

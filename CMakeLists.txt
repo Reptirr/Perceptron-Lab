@@ -41,6 +41,12 @@ qt_add_executable(PerceptronLab
         UI/include/predictinputfield.h UI/src/predictinputfield.cpp
         UI/include/rightpanel.h UI/src/rightpanel.cpp
         Network/src/Matrix.cpp
+        UI/src/bottompanel.cpp
+        UI/include/bottompanel.h
+        UIDriver/include/Trainer.h
+        UIDriver/src/Trainer.cpp
+        UI/src/LossChart.cpp
+        UI/include/LossChart.h
 )
 
 target_include_directories(PerceptronLab PRIVATE
@@ -49,7 +55,7 @@ target_include_directories(PerceptronLab PRIVATE
         UIDriver/include
 )
 
-target_link_libraries(PerceptronLab PRIVATE Qt6::Widgets)
+target_link_libraries(PerceptronLab PRIVATE Qt6::Widgets Qt6::Charts)
 set_target_properties(PerceptronLab PROPERTIES
     AUTOMOC ON
     AUTOUIC ON
@@ -59,8 +65,6 @@ set_target_properties(PerceptronLab PROPERTIES
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
     include(GNUInstallDirs)
-
-    set_target_properties(PerceptronLab PROPERTIES WIN32_EXECUTABLE ON)
 
     install(TARGETS PerceptronLab
             BUNDLE  DESTINATION .
@@ -83,6 +87,4 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
             COMMENT "Creating distributable in ${DIST_DIR}"
             VERBATIM
     )
-else()
-    message(STATUS "Target 'dist' is available only in Release build")
 endif()

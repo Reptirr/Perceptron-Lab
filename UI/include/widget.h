@@ -1,5 +1,6 @@
 #ifndef WIDGET_H
 #define WIDGET_H
+#include <bottompanel.h>
 #include <controlpanel.h>
 #include <qtmetamacros.h>
 #include <QWidget>
@@ -10,12 +11,12 @@ class Widget : public QWidget
 {
     Q_OBJECT
 
-private:
     ControlPanel *controlPanel;
 
-    InputField *inputField;
-    RightPanel *rightPanel;
-    UIDriver *uiDriver;
+    InputField *inputField{};
+    RightPanel *rightPanel{};
+    BottomPanel *bottomPanel{};
+    UIDriver *uiDriver{};
 
     void initializeConnects();
 

@@ -8,12 +8,19 @@ void Widget::initializeConnects() {
     // ControlPanel -> UIDriver
     // сигналы от кнопок
     connect(controlPanel->controlPanel(), &ControlPanelPrivate::predictRequest, uiDriver, &UIDriver::onPredictRequest);
-    connect(controlPanel->controlPanel(), &ControlPanelPrivate::trainClicked, uiDriver, &UIDriver::onTrainRequest);
-    connect(controlPanel->controlPanel(), &ControlPanelPrivate::resetClicked, uiDriver, &UIDriver::onResetRequest);
+
+    // BottomPanel -> UIDriver
+    // сигналы от кнопок
+    connect(bottomPanel, &BottomPanel::startTrainRequest, uiDriver, &UIDriver::onTrainRequest);
+    connect(bottomPanel, &BottomPanel::stopTrainRequest, uiDriver, &UIDriver::onStopTrainRequest);
+    connect(bottomPanel, &BottomPanel::resetRequest, uiDriver, &UIDriver::onResetRequest);
     // сигналы о изменении значения
-    connect(controlPanel->controlPanel(), &ControlPanelPrivate::epochValueChanged, uiDriver, &UIDriver::onEpochValueChanged);
-    connect(controlPanel->controlPanel(), &ControlPanelPrivate::lrValueChanged, uiDriver, &UIDriver::onLrValueChanged);
-    connect(controlPanel->controlPanel(), &ControlPanelPrivate::activationTypeChanged, uiDriver, &UIDriver::onActivationTypeChanged);
+    connect(bottomPanel, &BottomPanel::lrChanged, uiDriver, &UIDriver::onLrValueChanged);
+    connect(bottomPanel, &BottomPanel::activationChanged, uiDriver, &UIDriver::onActivationTypeChanged);
+
+    // UIDriver -> BottomPanel
+    // сигналы о изменении значения
+    connect(uiDriver, &UIDriver::epocheFinish, bottomPanel, &BottomPanel::onNewErrorPoint);
 
     // UIDriver <-> InputField
     // реквесты
@@ -33,38 +40,74 @@ Widget::Widget(QWidget *parent)
     // создаем компоненты
     uiDriver = new UIDriver(this);
     inputField = new InputField(DefaultModel.conf[0], DefaultModel.conf.back(), uiDriver, uiDriver->getSamples(), this);
+    bottomPanel = new BottomPanel(this);
 
     // ресайз
     resize(1000, 700);
 
-    // место для главного лайаута
-    auto *layout = new QHBoxLayout(this);
+    // ----------
+    // UP
+    // ----------
+    auto *upLayout = new QHBoxLayout(this);
 
     controlPanel = new ControlPanel(inputField, uiDriver, this);
     auto *split = new QWidget();
     rightPanel = new RightPanel(uiDriver, this);
 
-    controlPanel->controlPanel()->setAutoFillBackground(true);
+    controlPanel->controlPanel()->setStyleSheet("background: #232323");
     QPalette pal = controlPanel->controlPanel()->palette();
+    controlPanel->controlPanel()->setAutoFillBackground(true);
     pal.setColor(QPalette::Window, QColor("#232323"));
+    controlPanel->setPalette(pal);
     controlPanel->controlPanel()->setPalette(pal);
     split->setStyleSheet("background-color: #2C2C2C; border: none");
 
-    controlPanel->controlPanel()->setFixedWidth(300);
-    controlPanel->setFixedWidth(300);
+    controlPanel->controlPanel()->setFixedWidth(325);
+    controlPanel->setFixedWidth(325);
     split->setFixedWidth(4);
 
-    layout->setSpacing(0);
-    layout->setContentsMargins(0, 0, 0, 0);
+    upLayout->setSpacing(0);
+    upLayout->setContentsMargins(0, 0, 0, 0);
     controlPanel->controlPanel()->setContentsMargins(0, 0, 0, 0);
     rightPanel->setContentsMargins(0, 0, 0, 0);
     split->setContentsMargins(0, 0, 0, 0);
 
-    layout->addWidget(controlPanel);
-    layout->addWidget(split);
-    layout->addWidget(rightPanel);
+    upLayout->addWidget(controlPanel);
+    upLayout->addWidget(split);
+    upLayout->addWidget(rightPanel);
 
-    setLayout(layout);
+    // -----------
+    // BOTTOM
+    // -----------
+    auto *bottomLayout = new QHBoxLayout();
+    bottomLayout->setContentsMargins(0, 0, 0, 0);
+    bottomLayout->setSpacing(0);
+
+    auto *split1 = new QSplitter(this);
+    split1->setOrientation(Qt::Vertical);
+
+    bottomPanel->setAutoFillBackground(true);
+    bottomPanel->setPalette(pal);
+    // bottomPanel.setHe
+    // bottomPanel->setFixedHeight()
+    bottomLayout->addWidget(bottomPanel);
+
+    // split init
+    auto *upWidget = new QWidget();
+    upWidget->setLayout(upLayout);
+
+    auto bottomWidget = new QWidget();
+    bottomWidget->setLayout(bottomLayout);
+
+    split1->addWidget(upWidget);
+    split1->addWidget(bottomWidget);
+
+    auto *generalLayout = new QHBoxLayout(this);
+    generalLayout->setContentsMargins(0, 0, 0, 0);
+    generalLayout->setSpacing(0);
+
+    generalLayout->addWidget(split1);
+
 
     // коннектим
     initializeConnects();
